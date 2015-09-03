@@ -23,51 +23,59 @@ var User = React.createClass({
     );
   }
 });
-
 var RoleBox = React.createClass({
-loadRolesFromServer: function(){
-$.ajax({
-url:this.props.url,
-dataType:'json',
-cache:false,
-success:function(roleData){
-this.setState({roleData:roleData});
-}.bind(this),
-error:function(xhr, status, err){
-console.error(this.props.url, status, err.toString());}.bind(this)
-});
-},
-
-handleRoleSubmit: function(role){
-var roleData = this.state.roleData;
-var newRoleData = roleData.concat([role]);
-this.setState({roleData:newRoleData});
-$.ajax({
-url:this.props.url,
-dataType:'json',
-type:'POST',
-data: role,
-success: function(roleData){
-this.setState({roleData:roleData})}.bind(this),
-error: function(xhr, status, err){
-console.error(this.props.url, status, err.toString());}.bind(this)
-});
-},
-getInitialState: function() {
-      return {data: []};
-   },
-   componentDidMount: function() {
-      this.loadRolesFromServer();
-      setInterval(this.loadRolesFromServer, '2000');
+    loadRolesFromServer: function() {
+        $.ajax({
+            url: this.props.url,
+            dataType: 'json',
+            cache: false,
+            success: function(roleData) {
+                this.setState({
+                    roleData: roleData
+                });
+            }.bind(this),
+            error: function(xhr, status, err) {
+                console.error(this.props.url, status, err.toString());
+            }.bind(this)
+        });
     },
-   render: function() {
-        return (
-          <div className="roleBox">
-            <h1>Roles :</h1>
-            <RoleForm onRoleSubmit={this.handleRoleSubmit}/>
-          </div>
+
+    handleRoleSubmit: function(role) {
+        var roleData = this.state.roleData;
+        var newRoleData = roleData.concat([role]);
+        this.setState({
+            roleData: newRoleData
+        });
+        $.ajax({
+            url: this.props.url,
+            dataType: 'json',
+            type: 'POST',
+            data: role,
+            success: function(roleData) {
+                this.setState({
+                    roleData: roleData
+                })
+            }.bind(this),
+            error: function(xhr, status, err) {
+                console.error(this.props.url, status, err.toString());
+            }.bind(this)
+        });
+    },
+    getInitialState: function() {
+        return {
+            data: []
+        };
+    },
+    componentDidMount: function() {
+        this.loadRolesFromServer();
+        setInterval(this.loadRolesFromServer, '2000');
+    },
+    render: function() {
+        return ( <div className = "roleBox" >
+            <h1> Roles: < /h1> < RoleForm onRoleSubmit = {this.handleRoleSubmit}/>
+            </div>
         );
-      }
+    }
 });
 
 var RoleForm = React.createClass({
@@ -95,53 +103,61 @@ var RoleForm = React.createClass({
 });
 
 var UserBox = React.createClass({
-  loadUsersFromServer: function() {
-    $.ajax({
-      url: this.props.url,
-      dataType: 'json',
-      cache: false,
-      success: function(data) {
-        this.setState({data: data});
-      }.bind(this),
-      error: function(xhr, status, err) {
-        console.error(this.props.url, status, err.toString());
-      }.bind(this)
-    });
-  },
-  handleUsersSubmit: function(user) {
-    var userData = this.state.data;
-    var newUserData = userData.concat([user]);
-    this.setState({data: newUserData});
-    $.ajax({
-      url: this.props.url,
-      dataType: 'json',
-      type: 'POST',
-      data: user,
-      success: function(data) {
-        this.setState({data: data});
-      }.bind(this),
-      error: function(xhr, status, err) {
-        console.error(this.props.url, status, err.toString());
-      }.bind(this)
-    });
-  },
-  getInitialState: function() {
-    return {data: []};
-  },
-  componentDidMount: function() {
-    this.loadUsersFromServer();
-    setInterval(this.loadUsersFromServer, this.props.pollInterval);
-  },
- render: function() {
-    return (
-      <div className="userBox">
-        <h1>Users List</h1>
-        <UsersList data={this.state.data} />
-        <UserForm onUserSubmit={this.handleUsersSubmit} />
-        <RoleBox url="roles.json" pollInterval={2000}/>,
-      </div>
-    );
-  }
+    loadUsersFromServer: function() {
+        $.ajax({
+            url: this.props.url,
+            dataType: 'json',
+            cache: false,
+            success: function(data) {
+                this.setState({
+                    data: data
+                });
+            }.bind(this),
+            error: function(xhr, status, err) {
+                console.error(this.props.url, status, err.toString());
+            }.bind(this)
+        });
+    },
+    handleUsersSubmit: function(user) {
+        var userData = this.state.data;
+        var newUserData = userData.concat([user]);
+        this.setState({
+            data: newUserData
+        });
+        $.ajax({
+            url: this.props.url,
+            dataType: 'json',
+            type: 'POST',
+            data: user,
+            success: function(data) {
+                this.setState({
+                    data: data
+                });
+            }.bind(this),
+            error: function(xhr, status, err) {
+                console.error(this.props.url, status, err.toString());
+            }.bind(this)
+        });
+    },
+    getInitialState: function() {
+        return {
+            data: []
+        };
+    },
+    componentDidMount: function() {
+        this.loadUsersFromServer();
+        setInterval(this.loadUsersFromServer, this.props.pollInterval);
+    },
+    render: function() {
+        return (
+        <div className = "userBox" >
+            <h1> Users List </h1>
+            <UsersList data = {this.state.data}/>
+             <UserForm onUserSubmit = {this.handleUsersSubmit}/>
+             <RoleBox url = "roles.json" pollInterval = {2000}/>
+             < /div>
+        );
+    }
 });
 
 var UsersList = React.createClass({
@@ -194,7 +210,6 @@ var UserForm = React.createClass({
         Last Name :<input type="text" placeholder="Last name" ref="lastName" /><br/>
         User Id :<input type="text" placeholder="User Id" ref="userId" /><br/>
         Password : <input type="text" placeholder="Password" ref="password" /><br/>
-
         <input type="submit" value="Submit User" />
       </form>
     );
@@ -210,30 +225,3 @@ React.render(
 
 
 
-/*var SelectDropDownBox = React.createClass({
-  _onSelect: function(option) {
-    console.log('You selected ', option.label)
-  },
-  render: function() {
-    var options = [
-      { value: 'one', label: 'One' },
-      { value: 'two', label: 'Two' },
-      {
-        type: 'group', name: 'group1', items: [
-          { value: 'three', label: 'Three' },
-          { value: 'four', label: 'Four' }
-        ]
-      },
-      {
-        type: 'group', name: 'group2', items: [
-          { value: 'five', label: 'Five' },
-          { value: 'six', label: 'Six' }
-        ]
-      }
-    ]
-
-    var defaultOption = { value: 'two', label: 'Two' }
-
-    <Dropdown options={options} onChange={this._onSelect} value={defaultOption} />
-  }
-})*/
