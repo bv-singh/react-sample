@@ -1,14 +1,3 @@
-/**
- * This file provided by Facebook is for non-commercial testing and evaluation
- * purposes only. Facebook reserves all rights not expressly granted.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL
- * FACEBOOK BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN
- * ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
- * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
- */
 
 var User = React.createClass({
   render: function() {
@@ -94,9 +83,17 @@ var RoleForm = React.createClass({
   render: function() {
       return (
         <form className="roleForm" onSubmit={this.handleRolesSubmit}>
-          Role Name :<input type="text" placeholder="Role name" ref="roleName" /><br/>
-          Role Description :<input type="text" placeholder="Role Description" ref="roleDescription" /><br/>
-          <input type="submit" value="Submit Role" />
+          <div className="form-group">
+
+            <label for="roleName">Role Name :</label>
+            <input type="text" className="form-control" placeholder="Role name" ref="roleName" />
+           </div>
+           <div className="form-group">
+
+            <label for="role_desc">Role Description :</label>
+            <input id="role_desc" className="form-control" type="text" placeholder="Role Description" ref="roleDescription" /> 
+         </div>
+         <input type="submit" value="Submit Role" className="btn" />
         </form>
       );
     }
@@ -206,11 +203,25 @@ var UserForm = React.createClass({
   render: function() {
     return (
       <form className="userForm" onSubmit={this.handleSubmit}>
-        First Name :<input type="text" placeholder="First name" ref="firstName" /><br/>
-        Last Name :<input type="text" placeholder="Last name" ref="lastName" /><br/>
-        User Id :<input type="text" placeholder="User Id" ref="userId" /><br/>
-        Password : <input type="text" placeholder="Password" ref="password" /><br/>
-        <input type="submit" value="Submit User" />
+        <div className="form-group">
+          <label for="first_name">First Name :</label>
+          <input id="first_name" className="form-control" type="text" placeholder="First name" ref="firstName" />
+       </div> 
+        <div className="form-group">
+          <label for="last_name">Last Name :</label>
+          <input id="last_name" className="form-control" type="text" placeholder="Last name" ref="lastName" /> 
+         </div>
+        <div className="form-group">
+           <label for="user_id">User Id :</label>
+          <input id="user_id" type="text" className="form-control" placeholder="User Id" ref="userId" /> 
+        </div>
+      
+        <div className="form-group">
+            <label for="password">Password : </label>
+          <input id="password" type="password" className="form-control" placeholder="Password" ref="password" /> 
+       </div>
+       <input type="submit" value="Submit User" className="btn btn-default"/>
+        
       </form>
     );
   }
