@@ -16,4 +16,12 @@ npm install
 node server.js
 ```
 
+
+##Development
+Run the following command after making the changes in example.js file.
+
+```
+browserify -t reactify public/scripts/example.js -o public/scripts/bundle.js
+```
+
 And visit <http://localhost:3000/>. Try opening multiple tabs!

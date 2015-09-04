@@ -1,4 +1,48 @@
 
+var React = require('react');
+var unique = require('uniq');
+var Dropdown = require('../../node_modules/react-dropdown/dist/index');
+
+var DropDown = React.createClass({
+  _onSelect: function(option) {
+    console.log('You selected ', option.label)
+  },
+  render: function() {
+    var options = [
+      { value: 'one', label: 'One' },
+      { value: 'two', label: 'Two' },
+      {
+        type: 'group', name: 'group1', items: [
+          { value: 'three', label: 'Three' },
+          { value: 'four', label: 'Four' }
+        ]
+      },
+      {
+        type: 'group', name: 'group2', items: [
+          { value: 'five', label: 'Five' },
+          { value: 'six', label: 'Six' }
+        ]
+      }
+    ];
+    var defaultOption = { value: 'two', label: 'Two' };
+    return (
+          <Dropdown options={options} onChange={this._onSelect} value={defaultOption} />
+    );
+  }
+});
+
+var DropDownApp = React.createClass({
+render: function(){
+return (
+<div>
+This is the Dropdown component(API)
+<DropDown/>
+</div>
+);
+}
+});
+
+
 var User = React.createClass({
   render: function() {
     var rawMarkup = marked(this.props.children.toString(), {sanitize: true});
@@ -61,7 +105,7 @@ var RoleBox = React.createClass({
     },
     render: function() {
         return ( <div className = "roleBox" >
-            <h1> Roles: < /h1> < RoleForm onRoleSubmit = {this.handleRoleSubmit}/>
+            <h3> Roles: < /h3> < RoleForm onRoleSubmit = {this.handleRoleSubmit}/>
             </div>
         );
     }
@@ -93,7 +137,7 @@ var RoleForm = React.createClass({
             <label for="role_desc">Role Description :</label>
             <input id="role_desc" className="form-control" type="text" placeholder="Role Description" ref="roleDescription" /> 
          </div>
-         <input type="submit" value="Submit Role" className="btn" />
+         <input type="submit" value="Submit Role" className="btn btn-default"/>
         </form>
       );
     }
@@ -148,10 +192,14 @@ var UserBox = React.createClass({
     render: function() {
         return (
         <div className = "userBox" >
-            <h1> Users List </h1>
+            <h3> Users List </h3>
             <UsersList data = {this.state.data}/>
-             <UserForm onUserSubmit = {this.handleUsersSubmit}/>
-             <RoleBox url = "roles.json" pollInterval = {2000}/>
+             <UserForm onUserSubmit = {this.handleUsersSubmit}/><br/>
+             <DropDownApp/><br/>
+             <div className="mySelect">
+                  <MySelect url="roles.json"/>
+             </div><br/>
+             <RoleBox url = "roles.json" pollInterval = {2000}/><br/>
              < /div>
         );
     }
@@ -220,11 +268,44 @@ var UserForm = React.createClass({
             <label for="password">Password : </label>
           <input id="password" type="password" className="form-control" placeholder="Password" ref="password" /> 
        </div>
+
+       <div className="form-group">
+       <label for="gender_male">Male :</label>
+             <input type="radio" className="checkbox-control" name="male"  value="Male" />
+       <label for="gender_female">Female :</label>
+            <input type="radio" className="checkbox-control" name="female" value="Female" />
+       </div>
+
+
+
        <input type="submit" value="Submit User" className="btn btn-default"/>
         
       </form>
     );
   }
+});
+
+var MySelect = React.createClass({
+     getInitialState: function() {
+         return {
+             value: 'select'
+         }
+     },
+     change: function(event){
+         this.setState({value: event.target.value});
+     },
+     render: function(){
+        return(
+           <div>
+                 Static Roles : <select id="role" onChange={this.change} value={this.state.value} className="form-control">
+                  <option value="select">Select</option>
+                  <option value="Developer">Developer</option>
+                  <option value="Manager">Manager</option>
+               </select>
+
+           </div>
+        );
+     }
 });
 
 React.render(
