@@ -20089,8 +20089,8 @@ module.exports = unique
 
 },{}],160:[function(require,module,exports){
 
-var React = require('react');
-var unique = require('uniq');
+'use strict';
+
 var Dropdown = require('../../node_modules/react-dropdown/dist/index');
 
 var DropDown = React.createClass({displayName: "DropDown",
@@ -20122,16 +20122,25 @@ var DropDown = React.createClass({displayName: "DropDown",
 });
 
 var DropDownApp = React.createClass({displayName: "DropDownApp",
-render: function(){
-return (
-React.createElement("div", null, 
-"This is the Dropdown component(API)", 
-React.createElement(DropDown, null)
-)
-);
-}
+    render: function() {
+        return ( React.createElement("div", null, 
+            "This is the Dropdown component(API) ", React.createElement(DropDown, null)
+            )
+        );
+    }
 });
 
+module.exports = DropDownApp;
+
+},{"../../node_modules/react-dropdown/dist/index":2}],161:[function(require,module,exports){
+
+'use strict';
+
+var React = require('react');
+var unique = require('uniq');
+var TimerExample = require('./TimerExample.jsx');
+var RoleBox = require('./RoleBox.jsx');
+var DropDownApp = require('./DropDownApp.jsx');
 
 var User = React.createClass({displayName: "User",
   render: function() {
@@ -20146,6 +20155,195 @@ var User = React.createClass({displayName: "User",
     );
   }
 });
+
+var UserBox = React.createClass({displayName: "UserBox",
+    loadUsersFromServer: function() {
+        $.ajax({
+            url: this.props.url,
+            dataType: 'json',
+            cache: false,
+            success: function(data) {
+                this.setState({
+                    data: data
+                });
+            }.bind(this),
+            error: function(xhr, status, err) {
+                console.error(this.props.url, status, err.toString());
+            }.bind(this)
+        });
+    },
+    handleUsersSubmit: function(user) {
+        var userData = this.state.data;
+        var newUserData = userData.concat([user]);
+        this.setState({
+            data: newUserData
+        });
+        $.ajax({
+            url: this.props.url,
+            dataType: 'json',
+            type: 'POST',
+            data: user,
+            success: function(data) {
+                this.setState({
+                    data: data
+                });
+            }.bind(this),
+            error: function(xhr, status, err) {
+                console.error(this.props.url, status, err.toString());
+            }.bind(this)
+        });
+    },
+    getInitialState: function() {
+        return {
+            data: []
+        };
+    },
+    componentDidMount: function() {
+        this.loadUsersFromServer();
+        setInterval(this.loadUsersFromServer, this.props.pollInterval);
+    },
+    render: function() {
+        return (
+        React.createElement("div", {className: "userBox"}, 
+            React.createElement("h3", null, " Users List "), 
+            React.createElement("div", {className: "user-list"}, 
+            React.createElement(UsersList, {data: this.state.data}), 
+
+             React.createElement(UserForm, {onUserSubmit: this.handleUsersSubmit}), React.createElement("br", null), 
+             React.createElement(DropDownApp, null), React.createElement("br", null)
+             ), 
+             React.createElement("div", {className: "mySelect"}, 
+                  React.createElement(MySelect, {url: "roles.json"})
+             ), React.createElement("br", null), 
+             React.createElement(RoleBox, {url: "roles.json", pollInterval: 2000}), React.createElement("br", null)
+             )
+        );
+    }
+});
+
+var UsersList = React.createClass({displayName: "UsersList",
+  render: function() {
+    var userNodes = this.props.data.map(function(user, index) {
+      return (
+        // `key` is a React-specific concept and is not mandatory for the
+        // purpose of this tutorial. if you're curious, see more here:
+        // http://facebook.github.io/react/docs/multiple-components.html#dynamic-children
+        React.createElement("div", {className: "users-list"}, 
+        React.createElement(User, {author: user.firstName, key: index}, 
+          user.firstName, 
+          user.lastName, 
+          user.userId, 
+          user.password
+        )
+        )
+      );
+    });
+    return (
+      React.createElement("div", {className: "usersList"}, 
+        userNodes
+      )
+    );
+  }
+});
+
+var UserForm = React.createClass({displayName: "UserForm",
+  handleSubmit: function(e) {
+    e.preventDefault();
+    var firstName = React.findDOMNode(this.refs.firstName).value.trim();
+    var lastName = React.findDOMNode(this.refs.lastName).value.trim();
+    var userId = React.findDOMNode(this.refs.userId).value.trim();
+    var password = React.findDOMNode(this.refs.password).value.trim();
+
+    if (!firstName || !lastName || !userId || !password) {
+        alert('Please enter all the input fields');
+      return;
+    }
+    this.props.onUserSubmit({firstName: firstName, lastName: lastName, userId:userId, password:password });
+    React.findDOMNode(this.refs.firstName).value = '';
+    React.findDOMNode(this.refs.lastName).value = '';
+    React.findDOMNode(this.refs.userId).value = '';
+    React.findDOMNode(this.refs.password).value = '';
+  },
+  render: function() {
+    return (
+      React.createElement("form", {className: "userForm", onSubmit: this.handleSubmit}, 
+      React.createElement("div", {class: "col-md-12"}, 
+        React.createElement("div", {className: "form-group", class: "row"}, 
+          React.createElement("label", {for: "first_name"}, "First Name :"), 
+          React.createElement("input", {id: "first_name", className: "form-control", type: "text", placeholder: "First name", ref: "firstName"})
+       ), 
+        React.createElement("div", {className: "form-group", class: "row"}, 
+          React.createElement("label", {for: "last_name"}, "Last Name :"), 
+          React.createElement("input", {id: "last_name", className: "form-control", type: "text", placeholder: "Last name", ref: "lastName"})
+         ), 
+        React.createElement("div", {className: "form-group", class: "row"}, 
+           React.createElement("label", {for: "user_id"}, "User Id :"), 
+          React.createElement("input", {id: "user_id", type: "text", className: "form-control", placeholder: "User Id", ref: "userId"})
+        ), 
+      
+        React.createElement("div", {className: "form-group", class: "row"}, 
+            React.createElement("label", {for: "password"}, "Password : "), 
+          React.createElement("input", {id: "password", type: "password", className: "form-control", placeholder: "Password", ref: "password"})
+       ), 
+
+       React.createElement("div", {className: "form-group", class: "row"}, 
+       React.createElement("label", {for: "gender_male"}, "Male :"), 
+             React.createElement("input", {type: "radio", className: "checkbox-control", name: "male", value: "Male"}), 
+       React.createElement("label", {for: "gender_female"}, "Female :"), 
+            React.createElement("input", {type: "radio", className: "checkbox-control", name: "female", value: "Female"})
+       ), 
+       React.createElement("input", {type: "submit", value: "Submit User", className: "btn btn-default"})
+)
+      )
+    );
+  }
+});
+
+var MySelect = React.createClass({displayName: "MySelect",
+     getInitialState: function() {
+         return {
+             value: 'select'
+         }
+     },
+     change: function(event){
+         this.setState({value: event.target.value});
+     },
+     render: function(){
+        return(
+           React.createElement("div", null, 
+                 "Static Roles : ", React.createElement("select", {id: "role", onChange: this.change, value: this.state.value, className: "form-control"}, 
+                  React.createElement("option", {value: "select"}, "Select"), 
+                  React.createElement("option", {value: "Developer"}, "Developer"), 
+                  React.createElement("option", {value: "Manager"}, "Manager")
+               )
+
+           )
+        );
+     }
+});
+
+var MainBox = React.createClass({displayName: "MainBox",
+    render: function() {
+        return ( React.createElement("div", {className: "mainBox"}, 
+                    React.createElement("div", {className: "timerExample"}, 
+                        React.createElement(TimerExample, {start: Date.now(), tempCount: 20})
+                    ), 
+                    React.createElement("div", {className: "userBox"}, 
+                        React.createElement(UserBox, {url: "users.json", pollInterval: 2000})
+                    )
+                )
+        );
+    }
+});
+
+React.render(
+  React.createElement(MainBox, null),
+  document.getElementById('content')
+);
+},{"./DropDownApp.jsx":160,"./RoleBox.jsx":162,"./TimerExample.jsx":163,"react":158,"uniq":159}],162:[function(require,module,exports){
+
+'use strict';
+
 var RoleBox = React.createClass({displayName: "RoleBox",
     loadRolesFromServer: function() {
         $.ajax({
@@ -20233,173 +20431,54 @@ var RoleForm = React.createClass({displayName: "RoleForm",
     }
 });
 
-var UserBox = React.createClass({displayName: "UserBox",
-    loadUsersFromServer: function() {
-        $.ajax({
-            url: this.props.url,
-            dataType: 'json',
-            cache: false,
-            success: function(data) {
-                this.setState({
-                    data: data
-                });
-            }.bind(this),
-            error: function(xhr, status, err) {
-                console.error(this.props.url, status, err.toString());
-            }.bind(this)
-        });
+
+module.exports = RoleBox;
+
+},{}],163:[function(require,module,exports){
+
+/** @jsx React.DOM */
+
+'use strict';
+
+var TimerExample = React.createClass({displayName: "TimerExample",
+    statics : {
+    customMethod :function(foo){
+        return foo == 'bar';
+    }
     },
-    handleUsersSubmit: function(user) {
-        var userData = this.state.data;
-        var newUserData = userData.concat([user]);
-        this.setState({
-            data: newUserData
-        });
-        $.ajax({
-            url: this.props.url,
-            dataType: 'json',
-            type: 'POST',
-            data: user,
-            success: function(data) {
-                this.setState({
-                    data: data
-                });
-            }.bind(this),
-            error: function(xhr, status, err) {
-                console.error(this.props.url, status, err.toString());
-            }.bind(this)
-        });
+    componentDidMount : function(){
+    this.timer = setInterval(this.tick, 600);
     },
-    getInitialState: function() {
+
+    tick: function (){
+    this.setState({elapsed: new Date() - this.props.start});
+    this.setState({tempCount: this.state.tempCount + 2});
+    },
+
+    getInitialState : function(){
+         return {elapsed : 100, tempCount: this.props.tempCount};
+    },
+    getDefaultProps: function(){
         return {
-            data: []
-        };
-    },
-    componentDidMount: function() {
-        this.loadUsersFromServer();
-        setInterval(this.loadUsersFromServer, this.props.pollInterval);
+             currentValue : 200,
+             newValue:300
+            }
     },
     render: function() {
-        return (
-        React.createElement("div", {className: "userBox"}, 
-            React.createElement("h3", null, " Users List "), 
-            React.createElement(UsersList, {data: this.state.data}), 
-             React.createElement(UserForm, {onUserSubmit: this.handleUsersSubmit}), React.createElement("br", null), 
-             React.createElement(DropDownApp, null), React.createElement("br", null), 
-             React.createElement("div", {className: "mySelect"}, 
-                  React.createElement(MySelect, {url: "roles.json"})
-             ), React.createElement("br", null), 
-             React.createElement(RoleBox, {url: "roles.json", pollInterval: 2000}), React.createElement("br", null)
-             )
+
+         var elapsed = Math.round(this.state.elapsed / 100);
+         var tempCount = this.state.tempCount
+         // This will give a number with one digit after the decimal dot (xx.x):
+         var seconds = (elapsed / 10).toFixed(1);
+    return (
+         React.createElement("p", null, "This is an example for Timer. Initial Value is ", seconds, " ", React.createElement("br", null), 
+         "After calculations value is ", this.state.elapsed, " ", React.createElement("br", null), 
+         "From the getDefaultProps method currentValue :", this.props.currentValue, " , new Value : ", this.props.newValue, React.createElement("br", null), 
+         "Counter : ", this.state.tempCount
+        )
         );
     }
 });
 
-var UsersList = React.createClass({displayName: "UsersList",
-  render: function() {
-    var userNodes = this.props.data.map(function(user, index) {
-      return (
-        // `key` is a React-specific concept and is not mandatory for the
-        // purpose of this tutorial. if you're curious, see more here:
-        // http://facebook.github.io/react/docs/multiple-components.html#dynamic-children
-        React.createElement("div", {className: "users-list"}, 
-        React.createElement(User, {author: user.firstName, key: index}, 
-          user.firstName, 
-          user.lastName, 
-          user.userId, 
-          user.password
-        )
-        )
-      );
-    });
-    return (
-      React.createElement("div", {className: "usersList"}, 
-        userNodes
-      )
-    );
-  }
-});
-
-var UserForm = React.createClass({displayName: "UserForm",
-  handleSubmit: function(e) {
-    e.preventDefault();
-    var firstName = React.findDOMNode(this.refs.firstName).value.trim();
-    var lastName = React.findDOMNode(this.refs.lastName).value.trim();
-    var userId = React.findDOMNode(this.refs.userId).value.trim();
-    var password = React.findDOMNode(this.refs.password).value.trim();
-
-    if (!firstName || !lastName || !userId || !password) {
-        alert('Please enter all the input fields');
-      return;
-    }
-    this.props.onUserSubmit({firstName: firstName, lastName: lastName, userId:userId, password:password });
-    React.findDOMNode(this.refs.firstName).value = '';
-    React.findDOMNode(this.refs.lastName).value = '';
-    React.findDOMNode(this.refs.userId).value = '';
-    React.findDOMNode(this.refs.password).value = '';
-  },
-  render: function() {
-    return (
-      React.createElement("form", {className: "userForm", onSubmit: this.handleSubmit}, 
-        React.createElement("div", {className: "form-group"}, 
-          React.createElement("label", {for: "first_name"}, "First Name :"), 
-          React.createElement("input", {id: "first_name", className: "form-control", type: "text", placeholder: "First name", ref: "firstName"})
-       ), 
-        React.createElement("div", {className: "form-group"}, 
-          React.createElement("label", {for: "last_name"}, "Last Name :"), 
-          React.createElement("input", {id: "last_name", className: "form-control", type: "text", placeholder: "Last name", ref: "lastName"})
-         ), 
-        React.createElement("div", {className: "form-group"}, 
-           React.createElement("label", {for: "user_id"}, "User Id :"), 
-          React.createElement("input", {id: "user_id", type: "text", className: "form-control", placeholder: "User Id", ref: "userId"})
-        ), 
-      
-        React.createElement("div", {className: "form-group"}, 
-            React.createElement("label", {for: "password"}, "Password : "), 
-          React.createElement("input", {id: "password", type: "password", className: "form-control", placeholder: "Password", ref: "password"})
-       ), 
-
-       React.createElement("div", {className: "form-group"}, 
-       React.createElement("label", {for: "gender_male"}, "Male :"), 
-             React.createElement("input", {type: "radio", className: "checkbox-control", name: "male", value: "Male"}), 
-       React.createElement("label", {for: "gender_female"}, "Female :"), 
-            React.createElement("input", {type: "radio", className: "checkbox-control", name: "female", value: "Female"})
-       ), 
-
-
-
-       React.createElement("input", {type: "submit", value: "Submit User", className: "btn btn-default"})
-        
-      )
-    );
-  }
-});
-
-var MySelect = React.createClass({displayName: "MySelect",
-     getInitialState: function() {
-         return {
-             value: 'select'
-         }
-     },
-     change: function(event){
-         this.setState({value: event.target.value});
-     },
-     render: function(){
-        return(
-           React.createElement("div", null, 
-                 "Static Roles : ", React.createElement("select", {id: "role", onChange: this.change, value: this.state.value, className: "form-control"}, 
-                  React.createElement("option", {value: "select"}, "Select"), 
-                  React.createElement("option", {value: "Developer"}, "Developer"), 
-                  React.createElement("option", {value: "Manager"}, "Manager")
-               )
-
-           )
-        );
-     }
-});
-
-React.render(
-  React.createElement(UserBox, {url: "users.json", pollInterval: 2000}),
-  document.getElementById('content')
-);
-},{"../../node_modules/react-dropdown/dist/index":2,"react":158,"uniq":159}]},{},[160]);
+module.exports = TimerExample;
+},{}]},{},[161]);

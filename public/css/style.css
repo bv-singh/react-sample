@@ -1,6 +1,6 @@
 body {
     margin: 20px auto;
-    width: 60%;
+    width: 100%;
 }
 header h2 {
     text-align: center;
@@ -99,4 +99,23 @@ pre code {
     cursor: default;
     display: block;
     padding: 8px 10px;
+}
+
+.container-fluid {
+-   padding-right: 100px;
+    padding-left: 100px;
+    margin-right: 0px;
+    margin-left: 0px;
+    width: 60%;
+    
+}
+
+.user-list {
+border: 0px solid blue;
+}
+
+label {
+font-family: sans-serif;
+font-size: 18px;
+font-weight: bold;
 }
