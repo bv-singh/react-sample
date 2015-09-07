@@ -6,6 +6,7 @@ var unique = require('uniq');
 var TimerExample = require('./TimerExample.jsx');
 var RoleBox = require('./RoleBox.jsx');
 var DropDownApp = require('./DropDownApp.jsx');
+var RadioGroupApp = require('./RadioGroupApp.jsx');
 
 var User = React.createClass({
   render: function() {
@@ -129,6 +130,7 @@ var UserForm = React.createClass({
     React.findDOMNode(this.refs.userId).value = '';
     React.findDOMNode(this.refs.password).value = '';
   },
+
   render: function() {
     return (
       <form className="userForm" onSubmit={this.handleSubmit}>
@@ -141,6 +143,7 @@ var UserForm = React.createClass({
           <label for="last_name">Last Name :</label>
           <input id="last_name" className="form-control" type="text" placeholder="Last name" ref="lastName" /> 
          </div>
+
         <div className="form-group" class="row">
            <label for="user_id">User Id :</label>
           <input id="user_id" type="text" className="form-control" placeholder="User Id" ref="userId" /> 
@@ -152,17 +155,16 @@ var UserForm = React.createClass({
        </div>
 
        <div className="form-group" class="row">
-       <label for="gender_male">Male :</label>
-             <input type="radio" className="checkbox-control" name="male"  value="Male" />
-       <label for="gender_female">Female :</label>
-            <input type="radio" className="checkbox-control" name="female" value="Female" />
+            <RadioGroupApp/>
        </div>
+
        <input type="submit" value="Submit User" className="btn btn-default"/>
-</div>
+        </div>
       </form>
     );
   }
 });
+
 
 var MySelect = React.createClass({
      getInitialState: function() {
