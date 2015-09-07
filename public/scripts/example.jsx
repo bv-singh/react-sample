@@ -1,4 +1,15 @@
 
+'use strict';
+
+var React = require('react');
+var unique = require('uniq');
+var CounterApp = require('./CounterApp.jsx');
+var RoleBox = require('./RoleBox.jsx');
+var DropDownApp = require('./DropDownApp.jsx');
+var RadioGroupApp = require('./RadioGroupApp.jsx');
+var SelectPopoverApp = require('./SelectPopoverApp.jsx');
+
+
 var User = React.createClass({
   render: function() {
     var rawMarkup = marked(this.props.children.toString(), {sanitize: true});
@@ -11,92 +22,6 @@ var User = React.createClass({
       </div>
     );
   }
-});
-var RoleBox = React.createClass({
-    loadRolesFromServer: function() {
-        $.ajax({
-            url: this.props.url,
-            dataType: 'json',
-            cache: false,
-            success: function(roleData) {
-                this.setState({
-                    roleData: roleData
-                });
-            }.bind(this),
-            error: function(xhr, status, err) {
-                console.error(this.props.url, status, err.toString());
-            }.bind(this)
-        });
-    },
-
-    handleRoleSubmit: function(role) {
-        var roleData = this.state.roleData;
-        var newRoleData = roleData.concat([role]);
-        this.setState({
-            roleData: newRoleData
-        });
-        $.ajax({
-            url: this.props.url,
-            dataType: 'json',
-            type: 'POST',
-            data: role,
-            success: function(roleData) {
-                this.setState({
-                    roleData: roleData
-                })
-            }.bind(this),
-            error: function(xhr, status, err) {
-                console.error(this.props.url, status, err.toString());
-            }.bind(this)
-        });
-    },
-    getInitialState: function() {
-        return {
-            data: []
-        };
-    },
-    componentDidMount: function() {
-        this.loadRolesFromServer();
-        setInterval(this.loadRolesFromServer, '2000');
-    },
-    render: function() {
-        return ( <div className = "roleBox" >
-            <h1> Roles: < /h1> < RoleForm onRoleSubmit = {this.handleRoleSubmit}/>
-            </div>
-        );
-    }
-});
-
-var RoleForm = React.createClass({
-      handleRolesSubmit:function(e){
-        e.preventDefault();
-        var roleName = React.findDOMNode(this.refs.roleName).value.trim();
-        var roleDescription = React.findDOMNode(this.refs.roleDescription).value.trim();
-        if(!roleName || !roleDescription){
-          alert("Please role name/description");
-          return;
-        }
-      this.props.onRoleSubmit({roleName: roleName, roleDescription:roleDescription});
-      React.findDOMNode(this.refs.roleName).value = '';
-      React.findDOMNode(this.refs.roleDescription).value = '';
-  },
-  render: function() {
-      return (
-        <form className="roleForm" onSubmit={this.handleRolesSubmit}>
-          <div className="form-group">
-
-            <label for="roleName">Role Name :</label>
-            <input type="text" className="form-control" placeholder="Role name" ref="roleName" />
-           </div>
-           <div className="form-group">
-
-            <label for="role_desc">Role Description :</label>
-            <input id="role_desc" className="form-control" type="text" placeholder="Role Description" ref="roleDescription" /> 
-         </div>
-         <input type="submit" value="Submit Role" className="btn" />
-        </form>
-      );
-    }
 });
 
 var UserBox = React.createClass({
@@ -148,10 +73,19 @@ var UserBox = React.createClass({
     render: function() {
         return (
         <div className = "userBox" >
-            <h1> Users List </h1>
+            <h3> Users List </h3>
+            <div className="user-list">
             <UsersList data = {this.state.data}/>
-             <UserForm onUserSubmit = {this.handleUsersSubmit}/>
-             <RoleBox url = "roles.json" pollInterval = {2000}/>
+
+             <UserForm onUserSubmit = {this.handleUsersSubmit}/><br/>
+             <DropDownApp/><br/>
+
+             </div>
+             <div className="mySelect">
+                  <MySelect url="roles.json"/>
+             </div><br/>
+             <RoleBox url = "roles.json" pollInterval = {2000}/><br/>
+             <SelectPopoverApp url="selectPopover.json" pollInterval = {2000}/><br/>
              < /div>
         );
     }
@@ -200,39 +134,87 @@ var UserForm = React.createClass({
     React.findDOMNode(this.refs.userId).value = '';
     React.findDOMNode(this.refs.password).value = '';
   },
+
   render: function() {
     return (
-      <form className="userForm" onSubmit={this.handleSubmit}>
-        <div className="form-group">
+      <form ref="form" className="userForm" onSubmit={this.handleSubmit}>
+      <div class="col-md-12">
+        <div className="form-group" class="row">
           <label for="first_name">First Name :</label>
           <input id="first_name" className="form-control" type="text" placeholder="First name" ref="firstName" />
        </div> 
-        <div className="form-group">
+        <div className="form-group" class="row">
           <label for="last_name">Last Name :</label>
           <input id="last_name" className="form-control" type="text" placeholder="Last name" ref="lastName" /> 
          </div>
-        <div className="form-group">
+
+        <div className="form-group" class="row">
            <label for="user_id">User Id :</label>
           <input id="user_id" type="text" className="form-control" placeholder="User Id" ref="userId" /> 
         </div>
       
-        <div className="form-group">
+        <div className="form-group" class="row">
             <label for="password">Password : </label>
           <input id="password" type="password" className="form-control" placeholder="Password" ref="password" /> 
        </div>
+
+       <div className="form-group" class="row">
+            <RadioGroupApp/>
+       </div>
+
+
        <input type="submit" value="Submit User" className="btn btn-default"/>
-        
+        </div>
       </form>
     );
   }
 });
 
+
+var MySelect = React.createClass({
+     getInitialState: function() {
+         return {
+             value: 'select'
+         }
+     },
+     change: function(event){
+         this.setState({value: event.target.value});
+     },
+     render: function(){
+        return(
+           <div>
+                 Static Roles : <select id="role" onChange={this.change} value={this.state.value} className="form-control">
+                  <option value="select">Select</option>
+                  <option value="Developer">Developer</option>
+                  <option value="Manager">Manager</option>
+               </select>
+
+           </div>
+        );
+     }
+});
+
+var MainBox = React.createClass({
+    render: function() {
+        return ( <div className = "mainBox" >
+                    <div className = "counterApp" >
+                        <CounterApp start = {Date.now()} initialValue = {1}/>
+                    </div>
+                    <div className = "userBox" >
+                        <UserBox url = "users.json" pollInterval = {2000}/>
+                    </div>
+                </div>
+        );
+    }
+});
+
+
+
+
 React.render(
-  <UserBox url="users.json" pollInterval={2000} />,
+  <MainBox />,
   document.getElementById('content')
 );
-
-
 
 
 
