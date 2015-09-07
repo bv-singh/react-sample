@@ -133,7 +133,7 @@ var UserForm = React.createClass({
 
   render: function() {
     return (
-      <form className="userForm" onSubmit={this.handleSubmit}>
+      <form ref="form" className="userForm" onSubmit={this.handleSubmit}>
       <div class="col-md-12">
         <div className="form-group" class="row">
           <label for="first_name">First Name :</label>

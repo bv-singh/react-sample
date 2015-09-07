@@ -20329,7 +20329,7 @@ var UserForm = React.createClass({displayName: "UserForm",
 
   render: function() {
     return (
-      React.createElement("form", {className: "userForm", onSubmit: this.handleSubmit}, 
+      React.createElement("form", {ref: "form", className: "userForm", onSubmit: this.handleSubmit}, 
       React.createElement("div", {class: "col-md-12"}, 
         React.createElement("div", {className: "form-group", class: "row"}, 
           React.createElement("label", {for: "first_name"}, "First Name :"), 
@@ -20424,7 +20424,7 @@ getInitialState : function (){
              Radio => (
                React.createElement("div", null, " ", React.createElement("label", {for: "gender"}, " Gender :"), 
                  React.createElement(Radio, {value: "male"}), "Male", 
-                 React.createElement(Radio, {value: "female"}), "Female" 
+                 React.createElement(Radio, {value: "female"}), "Female"
                )
              )
            )
@@ -20546,7 +20546,6 @@ var TimerExample = React.createClass({displayName: "TimerExample",
     },
 
     tick: function (){
-    this.setState({elapsed: new Date() - this.props.start});
     this.setState({tempCount: this.state.tempCount + 2});
     },
 
@@ -20560,14 +20559,9 @@ var TimerExample = React.createClass({displayName: "TimerExample",
             }
     },
     render: function() {
-
-         var elapsed = Math.round(this.state.elapsed / 100);
          var tempCount = this.state.tempCount
-         // This will give a number with one digit after the decimal dot (xx.x):
-         var seconds = (elapsed / 10).toFixed(1);
     return (
-         React.createElement("p", null, "This is an example for Timer. Initial Value is ", seconds, " ", React.createElement("br", null), 
-         "After calculations value is ", this.state.elapsed, " ", React.createElement("br", null), 
+         React.createElement("p", null, "This is an example for Timer. ", React.createElement("br", null), 
          "From the getDefaultProps method currentValue :", this.props.currentValue, " , new Value : ", this.props.newValue, React.createElement("br", null), 
          "Counter : ", this.state.tempCount
         )
