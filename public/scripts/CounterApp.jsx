@@ -3,7 +3,7 @@
 
 'use strict';
 
-var TimerExample = React.createClass({
+var CounterApp = React.createClass({
     statics : {
     customMethod :function(foo){
         return foo == 'bar';
@@ -14,11 +14,11 @@ var TimerExample = React.createClass({
     },
 
     tick: function (){
-    this.setState({tempCount: this.state.tempCount + 2});
+    this.setState({initialValue: this.state.initialValue + 1});
     },
 
     getInitialState : function(){
-         return {elapsed : 100, tempCount: this.props.tempCount};
+         return {elapsed : 100, initialValue: this.props.initialValue};
     },
     getDefaultProps: function(){
         return {
@@ -27,14 +27,14 @@ var TimerExample = React.createClass({
             }
     },
     render: function() {
-         var tempCount = this.state.tempCount
+         var initialValue = this.state.initialValue
     return (
          <p>This is an example for Timer. <br/>
          From the getDefaultProps method currentValue :{this.props.currentValue} , new Value : {this.props.newValue}<br/>
-         Counter : {this.state.tempCount}
+         Counter : {this.state.initialValue}
         </p>
         );
     }
 });
 
-module.exports = TimerExample;
+module.exports = CounterApp;

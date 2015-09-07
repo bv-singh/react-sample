@@ -3,10 +3,12 @@
 
 var React = require('react');
 var unique = require('uniq');
-var TimerExample = require('./TimerExample.jsx');
+var CounterApp = require('./CounterApp.jsx');
 var RoleBox = require('./RoleBox.jsx');
 var DropDownApp = require('./DropDownApp.jsx');
 var RadioGroupApp = require('./RadioGroupApp.jsx');
+var SelectPopoverApp = require('./SelectPopoverApp.jsx');
+
 
 var User = React.createClass({
   render: function() {
@@ -77,11 +79,13 @@ var UserBox = React.createClass({
 
              <UserForm onUserSubmit = {this.handleUsersSubmit}/><br/>
              <DropDownApp/><br/>
+
              </div>
              <div className="mySelect">
                   <MySelect url="roles.json"/>
              </div><br/>
              <RoleBox url = "roles.json" pollInterval = {2000}/><br/>
+             <SelectPopoverApp /><br/>
              < /div>
         );
     }
@@ -158,6 +162,7 @@ var UserForm = React.createClass({
             <RadioGroupApp/>
        </div>
 
+
        <input type="submit" value="Submit User" className="btn btn-default"/>
         </div>
       </form>
@@ -192,8 +197,8 @@ var MySelect = React.createClass({
 var MainBox = React.createClass({
     render: function() {
         return ( <div className = "mainBox" >
-                    <div className = "timerExample" >
-                        <TimerExample start = {Date.now()} tempCount = {20}/>
+                    <div className = "counterApp" >
+                        <CounterApp start = {Date.now()} initialValue = {1}/>
                     </div>
                     <div className = "userBox" >
                         <UserBox url = "users.json" pollInterval = {2000}/>
@@ -203,8 +208,13 @@ var MainBox = React.createClass({
     }
 });
 
+
+
+
 React.render(
   <MainBox />,
   document.getElementById('content')
 );
+
+
 
