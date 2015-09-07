@@ -1,0 +1,8 @@
+[
+  { label: "CSS",
+    value: "css" },
+  { label: "HTML", value: "html" },
+  { label: "JavaScript", value: "js" },
+  { label: "Ruby on Rails", value: "ror" },
+  { label: "Java", value: "java" },
+]

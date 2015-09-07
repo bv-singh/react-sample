@@ -25,6 +25,14 @@ app.get('/roles.json', function(req, res) {
   });
 });
 
+//TODO - This functionality still needs to check
+app.get('/selectPopover.json', function(req, res){
+fs.readFile('selectPopover.json', function(err, data){
+res.setHeader('Cache-Control', 'no-cache');
+res.json(JSON.parse(data));
+})
+});
+
 app.post('/roles.json', function(req, res) {
   fs.readFile('roles.json', function(err, data) {
     var roles = JSON.parse(data);

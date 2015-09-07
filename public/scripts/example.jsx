@@ -85,7 +85,7 @@ var UserBox = React.createClass({
                   <MySelect url="roles.json"/>
              </div><br/>
              <RoleBox url = "roles.json" pollInterval = {2000}/><br/>
-             <SelectPopoverApp /><br/>
+             <SelectPopoverApp url="selectPopover.json" pollInterval = {2000}/><br/>
              < /div>
         );
     }
